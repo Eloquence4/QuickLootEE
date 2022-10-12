@@ -134,7 +134,7 @@ namespace Scaleform
 				_openCloseHandler.Open();
 
 				if (Settings::DispelInvisibility()) {
-					dst->DispelEffectsWithArchetype(RE::EffectArchetypes::ArchetypeID::kInvisibility, false);
+					dst->AsMagicTarget()->DispelEffectsWithArchetype(RE::EffectArchetypes::ArchetypeID::kInvisibility, false);
 				}
 			}
 
@@ -449,7 +449,7 @@ namespace Scaleform
 				auto inventoryWeight =
 					static_cast<std::ptrdiff_t>(dst->GetWeightInContainer());
 				auto carryWeight =
-					static_cast<std::ptrdiff_t>(dst->GetActorValue(RE::ActorValue::kCarryWeight));
+					static_cast<std::ptrdiff_t>(dst->AsActorValueOwner()->GetActorValue(RE::ActorValue::kCarryWeight));
 				auto text = std::to_string(inventoryWeight);
 				text += " / ";
 				text += std::to_string(carryWeight);
