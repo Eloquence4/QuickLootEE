@@ -70,6 +70,9 @@
 		}
 
 		var displayName: String = data.displayName != null ? data.displayName : "";
+		var CompletionistTag: String = displayName.split("CompTag");
+		displayName = CompletionistTag[0].length > 0 ? CompletionistTag[0] : displayName;
+	  
 		var count: Number = data.count != null ? data.count : 1;
 		var stolen: Boolean = data.stolen != null ? data.stolen : false;
 		var weight: Number = data.weight != null ? data.weight : 0;
@@ -104,6 +107,11 @@
 		textField.autoSize = "left";
 		
 		textField.textColor = stolen ? RED : WHITE;
+
+		 if(CompletionistTag[1].length > 0)
+		 {
+			 textField.textColor = parseInt(CompletionistTag[1]);
+		 }
 		
 		var iconPosX = textField._x + textField._width + 3;
 		var iconSpacing = 3;
