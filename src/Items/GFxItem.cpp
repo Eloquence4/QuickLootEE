@@ -1,5 +1,7 @@
 #include "GFxItem.h"
 
+#undef GetModuleHandle
+
 static const char* strIcons[] = {
 	"none",  // 00
 	"default_weapon",
@@ -102,6 +104,20 @@ static const char* strIcons[] = {
 
 using namespace RE;
 
+struct CompletionistRequestEE
+{
+	RE::FormID m_formId;
+};
+
+struct CompletionistResponseEE
+{
+	RE::FormID m_formId;
+	std::string m_displayname;
+};
+
+std::optional<CompletionistResponseEE> comp_response{ std::nullopt };
+bool comp_installed{};
+
 namespace Items
 {
 	GFxItem::GFxItem(std::ptrdiff_t a_count, bool a_stealing, SKSE::stl::observer<RE::InventoryEntryData*> a_item)
@@ -148,6 +164,24 @@ namespace Items
 
 	const std::string& GFxItem::GetDisplayName() const
 	{
+		if (comp_installed)
+		{
+			comp_response = std::nullopt;
+
+			if (auto* messageInterface = SKSE::GetMessagingInterface())
+			{
+				CompletionistRequestEE request{ GetFormID() };
+				messageInterface->Dispatch(1, &request, sizeof(request), "Completionist");
+				//logger::info("Completionist is installed, Message Sent For - {}"sv, GetFormID());
+			}
+
+			if (comp_response && comp_response->m_formId == GetFormID() && comp_response->m_displayname != "")
+			{
+				//logger::info("Completionist Message Receieved With Matching FormID and Valid Name");
+				return comp_response->m_displayname;
+			}
+		}
+
 		if (_cache[kDisplayName]) {
 			return _cache.DisplayName();
 		}
@@ -1175,3 +1209,27 @@ namespace Items
 	}
 }
 
+namespace Completionist_Integration
+{
+	void RegisterListener()
+	{
+		if (WinAPI::GetModuleHandle(L"Completionist"))
+		{
+			comp_installed = true;
+			logger::info("Completionist is installed, registering listener"sv);
+			auto* messageInterface = SKSE::GetMessagingInterface();
+			messageInterface->RegisterListener("Completionist", [](SKSE::MessagingInterface::Message* a_msg)
+			{
+				if (!a_msg || a_msg->type != 2 || !a_msg->data)
+				{
+					return;
+				}
+				comp_response = *static_cast<CompletionistResponseEE*>(a_msg->data);
+			});
+		}
+		else
+		{
+			comp_installed = false;
+		}
+	}
+}

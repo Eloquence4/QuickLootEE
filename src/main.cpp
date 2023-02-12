@@ -5,6 +5,7 @@
 #include "Loot.h"
 #include "Scaleform/Scaleform.h"
 #include "LOTD/LOTD.h"
+#include "Items/GFxItem.h"
 
 namespace
 {
@@ -96,6 +97,11 @@ namespace
 			Settings::LoadSettings();
 			LOTD::LoadLists();
 			break;
+		case SKSE::MessagingInterface::kPostPostLoad:
+		{
+			Completionist_Integration::RegisterListener();
+		}
+		break;
 		}
 	}
 

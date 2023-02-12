@@ -6,6 +6,11 @@
 
 #include "LOTD/LOTD.h"
 
+namespace Completionist_Integration
+{
+	void RegisterListener();
+}
+
 namespace Items
 {
 	enum class kType
@@ -131,12 +136,13 @@ namespace Items
 		Unknown
 	};
 
+
 	class GFxItem
 	{
 	public:
+
 		GFxItem(std::ptrdiff_t a_count, bool a_stealing, SKSE::stl::observer<RE::InventoryEntryData*> a_item);
 		GFxItem(std::ptrdiff_t a_count, bool a_stealing, std::span<const RE::ObjectRefHandle> a_items);
-
 		[[nodiscard]] constexpr std::ptrdiff_t Count() const noexcept { return _count; }
 		[[nodiscard]] int                      Compare(const GFxItem& a_rhs) const;
 		[[nodiscard]] const std::string&       GetDisplayName() const;
