@@ -115,8 +115,8 @@ struct CompletionistResponseEE
 	std::string m_displayname;
 };
 
-std::optional<CompletionistResponseEE> comp_response{ std::nullopt };
-bool comp_installed{};
+static std::optional<CompletionistResponseEE> comp_response{ std::nullopt };
+static bool comp_installed{};
 
 namespace Items
 {
