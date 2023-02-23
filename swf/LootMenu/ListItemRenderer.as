@@ -70,7 +70,7 @@
 		}
 
 		var displayName: String = data.displayName != null ? data.displayName : "";
-		var CompletionistTag: String = displayName.split("CompTag");
+		var CompletionistTag: Array = displayName.split("CompTag");
 		displayName = CompletionistTag[0].length > 0 ? CompletionistTag[0] : displayName;
 	  
 		var count: Number = data.count != null ? data.count : 1;
