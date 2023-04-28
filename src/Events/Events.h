@@ -104,15 +104,26 @@ namespace Events
 				return CanOpen(_cachedAshPile.get());
 			}
 
-			//const bool disable_for_animals = Settings::DisableForAnimals();
+			const bool disable_for_animals = Settings::DisableForAnimals();
 
 			if (auto actor = a_ref->As<RE::Actor>(); actor) {
-				//auto dobj = RE::BGSDefaultObjectManager::GetSingleton();
-				//auto animal_keyword = dobj->GetObject<RE::BGSKeyword>(RE::DEFAULT_OBJECT::kKeywordAnimal);
+				auto dobj = RE::BGSDefaultObjectManager::GetSingleton();
+				if (!dobj) {
+					logger::info("This was it, the segfault."); //said line 112, which was an empty line after animal_keyword =
+					return false;
+				}
+				auto animal_keyword = dobj->GetObject<RE::BGSKeyword>(RE::DEFAULT_OBJECT::kKeywordAnimal);
+				auto race = actor->GetRace();
+				if (race) {
+					logger::info("actor has keyword or actor's race does [{}]"sv, actor->GetRace()->HasKeyword(animal_keyword));
+				} else {
+					logger::info("Actor has no race pointer, or we couldn't get it."); // seems the most likely candidate for the crash which so far is unreproducible
+				}
 
+				// actor was already checked
 				if (!actor->IsDead() 
-					|| actor->IsSummoned())
-					//|| (disable_for_animals && actor->GetRace()->HasKeyword(animal_keyword)))
+					|| actor->IsSummoned()
+					|| (disable_for_animals && race && race->HasKeyword(animal_keyword)))
 				{
 					return false;
 				}
