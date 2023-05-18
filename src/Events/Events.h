@@ -113,17 +113,11 @@ namespace Events
 					return false;
 				}
 				auto animal_keyword = dobj->GetObject<RE::BGSKeyword>(RE::DEFAULT_OBJECT::kKeywordAnimal);
-				auto race = actor->GetRace();
-				if (race) {
-					logger::info("actor has keyword or actor's race does [{}]"sv, actor->GetRace()->HasKeyword(animal_keyword));
-				} else {
-					logger::error("Actor has no race pointer, or we couldn't get it."); // seems the most likely candidate for the crash which so far is unreproducible
-				}
 
 				// actor was already checked
 				if (!actor->IsDead() 
 					|| actor->IsSummoned()
-					|| (disable_for_animals && race && race->HasKeyword(animal_keyword)))
+					|| (disable_for_animals && actor->HasKeyword(animal_keyword)))
 				{
 					return false;
 				}
