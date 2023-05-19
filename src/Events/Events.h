@@ -107,17 +107,10 @@ namespace Events
 			const bool disable_for_animals = Settings::DisableForAnimals();
 
 			if (auto actor = a_ref->As<RE::Actor>(); actor) {
-				auto dobj = RE::BGSDefaultObjectManager::GetSingleton();
-				if (!dobj) {
-					logger::error("This was it, the segfault. dobj was null"); //said line 112, which was an empty line after animal_keyword =
-					return false;
-				}
-				auto animal_keyword = dobj->GetObject<RE::BGSKeyword>(RE::DEFAULT_OBJECT::kKeywordAnimal);
-
 				// actor was already checked
-				if (!actor->IsDead() 
+				if (!actor->IsDead()
 					|| actor->IsSummoned()
-					|| (disable_for_animals && actor->HasKeyword(animal_keyword)))
+					|| (disable_for_animals && actor->HasKeywordString("ActorTypeAnimal")))
 				{
 					return false;
 				}
