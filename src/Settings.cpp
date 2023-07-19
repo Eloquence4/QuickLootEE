@@ -13,6 +13,7 @@ void Settings::LoadSettings()
 	LoadGlobal(settings.m_show_dbm_found              , "QLEEIconShowDBMFound");
 	LoadGlobal(settings.m_show_dbm_new                , "QLEEIconShowDBMNew");
 	LoadGlobal(settings.m_disable_for_animals         , "QLEEDisableForAnimals");
+	LoadGlobal(settings.m_disable_for_monsters		  , "QLEEDisableForMonsters");
 	LoadGlobal(settings.m_window_X                    , "QLEEWindowX");
 	LoadGlobal(settings.m_window_Y                    , "QLEEWindowY");
 	LoadGlobal(settings.m_window_W                    , "QLEEWindowW");
@@ -47,6 +48,12 @@ bool Settings::DisableForAnimals()
 {
 	auto& settings = GetSingleton();
 	return settings.m_disable_for_animals && settings.m_disable_for_animals->value > 0;
+}
+
+bool Settings::DisableForMonsters()
+{
+	auto& settings = GetSingleton();
+	return settings.m_disable_for_monsters && settings.m_disable_for_monsters->value > 0;
 }
 
 bool Settings::ShowBookRead()

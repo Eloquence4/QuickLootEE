@@ -105,17 +105,25 @@ namespace Events
 			}
 
 			const bool disable_for_animals = Settings::DisableForAnimals();
+			const bool disable_for_monsters = Settings::DisableForMonsters();
 
 			if (auto actor = a_ref->As<RE::Actor>(); actor) {
-				// actor was already checked
-				if (!actor->IsDead()
-					|| actor->IsSummoned()
-					|| (disable_for_animals && actor->HasKeywordString("ActorTypeAnimal")))
-				{
+				// show menu?
+				bool no_menu = !actor->IsDead() || actor->IsSummoned();
+				//isAnimal
+				no_menu = no_menu || disable_for_animals && actor->HasKeywordString("ActorTypeAnimal");
+				//isMonster
+				if (!no_menu && disable_for_monsters) {
+					bool is_monster = actor->HasKeywordString("ActorTypeCreature") ||
+					                  actor->HasKeywordString("ActorTypeDragon");
+					no_menu = is_monster;
+				}
+				//isCustomKeyword?
+				// todo: file io
+				if (no_menu) {
 					return false;
 				}
 			}
-
 			return a_ref->HasContainer();
 		}
 
