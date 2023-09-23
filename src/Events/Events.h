@@ -114,8 +114,7 @@ namespace Events
 				no_menu = no_menu || disable_for_animals && actor->HasKeywordString("ActorTypeAnimal");
 				//isMonster
 				if (!no_menu && disable_for_monsters) {
-					bool is_monster = actor->HasKeywordString("ActorTypeCreature") ||
-					                  actor->HasKeywordString("ActorTypeDragon");
+					bool is_monster = actor->HasKeywordString("ActorTypeDragon");
 					no_menu = is_monster;
 				}
 				//isCustomKeyword?
