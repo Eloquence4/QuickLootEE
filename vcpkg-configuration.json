@@ -11,7 +11,11 @@
         "bethesda-skyrim-scripts",
         "gluino",
         "script-extender-common",
-        "commonlibsse-ng-ae"
+        "commonlibsse-ng",
+        "commonlibsse-ng-ae",
+        "commonlibsse-ng-se",
+        "commonlibsse-ng-vr",
+        "commonlibsse-ng-flatrim"
       ]
     }
 	]
