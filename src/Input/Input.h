@@ -274,7 +274,7 @@ namespace Input
 			const auto for_each = [&](std::function<void(RE::ControlMap::UserEventMapping&, std::size_t)> a_functor) {
 				for (auto& map : a_controlMap->controlMap) {
 					if (map) {
-						for (std::size_t i = 0; i < RE::INPUT_DEVICES::kTotal; ++i) {
+						for (std::size_t i = 0; i < RE::ControlMap::InputContext::GetNumDeviceMappings(); ++i) {
 							for (auto& userMapping : map->deviceMappings[i]) {
 								a_functor(userMapping, i);
 							}
@@ -358,7 +358,9 @@ namespace Input
 
 				constexpr auto N = []() noexcept {
 					std::size_t size = 0;
-					for (std::size_t i = Key::kRightShoulder; i != 0; i >>= 1) { ++size; }
+					for (std::size_t i = Key::kRightShoulder; i != 0; i >>= 1) {
+						++size;
+					}
 					return size + 4 + 2;
 				}();
 

@@ -1,18 +1,12 @@
 {
   "configurePresets": [
     {
+      "name": "cmake-dev",
       "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": {
-          "type": "STRING",
-          "value": "Release"
-        }
-      },
       "errors": {
         "deprecated": true
       },
       "hidden": true,
-      "name": "cmake-dev",
       "warnings": {
         "deprecated": true,
         "dev": true
@@ -56,7 +50,6 @@
       },
       "generator": "Visual Studio 17 2022",
       "inherits": [
-        "cmake-dev",
         "vcpkg",
         "windows"
       ],
@@ -65,18 +58,33 @@
       "toolset": "v143"
     },
     {
-      "binaryDir": "${sourceDir}/build/skyrim",
-      "cacheVariables": {
-        "BUILD_SKYRIM": true
-      },
+      "name": "Skyrim",
+      "binaryDir": "${sourceDir}/build/",
       "inherits": [
         "cmake-dev",
         "vcpkg",
         "windows",
         "vs2022-windows"
-      ],
-      "name": "skyrim"
+      ]
     }
   ],
-  "version": 3
+  "version": 3,
+  "buildPresets": [
+    {
+      "name": "Release",
+      "configurePreset": "Skyrim",
+      "configuration": "Release"
+    },
+    {
+      "name": "RelWithDebInfo",
+      "displayName": "Release With Debug Info",
+      "configurePreset": "Skyrim",
+      "configuration": "Release"
+    },
+    {
+      "name": "Debug",
+      "configurePreset": "Skyrim",
+      "configuration": "Debug"
+    }
+  ]
 }

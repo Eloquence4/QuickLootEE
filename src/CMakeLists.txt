@@ -72,6 +72,7 @@ configure_file(
 find_package(frozen REQUIRED CONFIG)
 find_package(spdlog REQUIRED CONFIG)
 find_package(srell MODULE REQUIRED)
+find_package(directxtk CONFIG REQUIRED)
 find_package(CommonLibSSE CONFIG REQUIRED)
 find_package(xbyak CONFIG REQUIRED)
 
@@ -88,56 +89,56 @@ add_commonlibsse_plugin(
 target_compile_features(
 	"${PROJECT_NAME}"
 	PRIVATE
-		cxx_std_20
+	cxx_std_20
 )
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 	target_compile_options(
 		"${PROJECT_NAME}"
 		PRIVATE
-			"/sdl"	# Enable Additional Security Checks
-			"/utf-8"	# Set Source and Executable character sets to UTF-8
-			"/Zi"	# Debug Information Format
+		"/sdl" # Enable Additional Security Checks
+		"/utf-8" # Set Source and Executable character sets to UTF-8
+		"/Zi" # Debug Information Format
 
-			"/permissive-"	# Standards conformance
-			"/Zc:preprocessor"	# Enable preprocessor conformance mode
+		"/permissive-" # Standards conformance
+		"/Zc:preprocessor" # Enable preprocessor conformance mode
 
-			"/wd4200" # nonstandard extension used : zero-sized array in struct/union
+		"/wd4200" # nonstandard extension used : zero-sized array in struct/union
 
-			"$<$<CONFIG:DEBUG>:>"
-			"$<$<CONFIG:RELEASE>:/Zc:inline;/JMC-;/Ob3>"
+		"$<$<CONFIG:DEBUG>:>"
+		"$<$<CONFIG:RELEASE>:/Zc:inline;/JMC-;/Ob3>"
 	)
 
 	target_link_options(
 		"${PROJECT_NAME}"
 		PRIVATE
-			"$<$<CONFIG:DEBUG>:/INCREMENTAL;/OPT:NOREF;/OPT:NOICF>"
-			"$<$<CONFIG:RELEASE>:/INCREMENTAL:NO;/OPT:REF;/OPT:ICF;/DEBUG:FULL>"
+		"$<$<CONFIG:DEBUG>:/INCREMENTAL;/OPT:NOREF;/OPT:NOICF>"
+		"$<$<CONFIG:RELEASE>:/INCREMENTAL:NO;/OPT:REF;/OPT:ICF;/DEBUG:FULL>"
 	)
 endif()
 
 target_include_directories(
 	"${PROJECT_NAME}"
 	PRIVATE
-		"${CMAKE_CURRENT_BINARY_DIR}/include"
-		"${INCLUDE_DIR}"
-		"${SOURCE_DIR}"
+	"${CMAKE_CURRENT_BINARY_DIR}/include"
+	"${INCLUDE_DIR}"
+	"${SOURCE_DIR}"
 )
 
 target_link_libraries(
 	"${PROJECT_NAME}"
 	PRIVATE
-		CommonLibSSE::CommonLibSSE
-		frozen::frozen
-		spdlog::spdlog
-		srell::srell
-		xbyak::xbyak
+	CommonLibSSE::CommonLibSSE
+	frozen::frozen
+	spdlog::spdlog
+	srell::srell
+	xbyak::xbyak
 )
 
 target_precompile_headers(
 	"${PROJECT_NAME}"
 	PRIVATE
-		"${SOURCE_DIR}/PCH.h"
+	"${SOURCE_DIR}/PCH.h"
 )
 
 if("${COPY_OUTPUT}")
@@ -145,6 +146,7 @@ if("${COPY_OUTPUT}")
 		TARGET "${PROJECT_NAME}"
 		POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${Skyrim64Path}/Data/SKSE/Plugins/"
+		COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_PDB_FILE:${PROJECT_NAME}>" "${Skyrim64Path}/Data/SKSE/Plugins/"
 		VERBATIM
 	)
 endif()

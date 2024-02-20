@@ -1,5 +1,9 @@
 #pragma once
 
+// Visual Studio refuses to say what's actually causing the error, so let's just disable it globally
+// I'm sure that's a good idea
+#define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
+
 #include "RE/Skyrim.h"
 #include "SKSE/SKSE.h"
 
@@ -34,11 +38,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <srell.hpp>
 
-#ifdef NDEBUG
-#	include <spdlog/sinks/basic_file_sink.h>
-#else
-#	include <spdlog/sinks/msvc_sink.h>
-#endif
+#include <spdlog/sinks/basic_file_sink.h>
 #pragma warning(pop)
 
 namespace logger = SKSE::log;
