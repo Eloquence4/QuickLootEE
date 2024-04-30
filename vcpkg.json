@@ -1,19 +1,23 @@
 {
-  "name": "quicklootee",
-  "version-string": "1",
-  "description": "A quick looting mod for Skyrim: Special Edition akin to Fallout 4.",
-  "homepage": "https://github.com/Eloquence4/QuickLootEE",
+  "name": "quicklootee-ng",
+  "version-semver": "1.0.0",
+  "description": "A port of QuickLootEE to NG for one DLL for all versions.",
+  "homepage": "https://github.com/MissCorruption/QuickLootEE-NG",
   "license": "MIT",
   "dependencies": [
     "boost-stl-interfaces",
     "frozen",
     "rsm-binary-io",
-    "fmt",
-    "spdlog",
     "srell",
-    "articuno",
-    "commonlibsse-ng-flatrim",
-    "xbyak"
+    "fmt",
+    "directxtk",
+    "rapidcsv",
+    "spdlog",
+    "xbyak",
+    "catch2",
+    "magic-enum",
+    "nlohmann-json",
+    "clib-util"
   ],
-  "builtin-baseline": "b49b2bdf22559c89eddbf29a29621a1dc6929320"
+  "builtin-baseline": "83972272512ce4ede5fc3b2ba98f6468b179f192"
 }

@@ -149,14 +149,17 @@ namespace Scaleform
 			auto menu = static_cast<super*>(this);
 			menu->depthPriority = -1;
 			auto scaleformManager = RE::BSScaleformManager::GetSingleton();
-			[[maybe_unused]] const auto success =
-				scaleformManager->LoadMovieEx(menu, FILE_NAME, [](RE::GFxMovieDef* a_def) -> void {
-					a_def->SetState(
-						RE::GFxState::StateType::kLog,
-						RE::make_gptr<Logger>().get());
-				});
 
+			[[maybe_unused]] const auto success = scaleformManager->LoadMovie(menu, menu->uiMovie, FILE_NAME.data());
 			assert(success);
+
+			auto def = menu->uiMovie->GetMovieDef();
+			if (def) {
+				def->SetState(
+					RE::GFxState::StateType::kLog,
+					RE::make_gptr<Logger>().get());
+			}
+
 			_viewHandler.emplace(menu, _dst);
 			_view = menu->uiMovie;
 			_view->SetMouseCursorCount(0);  // disable input, we'll handle it ourselves

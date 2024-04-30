@@ -118,7 +118,7 @@ namespace Events
 				}
 			}
 
-			return a_ref->HasContainer();
+			return a_ref->HasContainer() && !a_ref->IsLocked();
 		}
 
 		RE::ObjectRefHandle _cachedRef;

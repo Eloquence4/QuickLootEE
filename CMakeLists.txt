@@ -1,30 +1,84 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(
-	QuickLootEE
-	VERSION 1.2.0
+	QuickLootEE-NG
+	VERSION 1.0.0
 	LANGUAGES CXX
 )
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
-	message(FATAL_ERROR "in-source builds are not allowed")
-endif()
-
-macro(set_from_environment VARIABLE)
-	if(NOT DEFINED ${VARIABLE} AND DEFINED ENV{${VARIABLE}})
-		set(${VARIABLE} $ENV{${VARIABLE}})
-	endif()
-endmacro()
-
-set_from_environment(Skyrim64Path)
-if(NOT DEFINED Skyrim64Path)
-	message(FATAL_ERROR "Skyrim64Path is not set")
-endif()
-
-option(COPY_OUTPUT "copy the output of build operations to the game directory" OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-add_subdirectory(src)
-include(cmake/archive_artifacts.cmake)
+# ########################################################################################################################
+# ## Build options
+# ########################################################################################################################
+message("Options:")
+option(AUTO_PLUGIN_DEPLOYMENT "Copy the build output and addons to env:OutputDir." OFF)
+option(ZIP_TO_DIST "Zip the base mod and addons to their own 7z file in dist." ON)
+option(AIO_ZIP_TO_DIST "Zip the base mod and addons to a AIO 7z file in dist." OFF)
+message("\tAuto plugin deployment: ${AUTO_PLUGIN_DEPLOYMENT}")
+message("\tZip to dist: ${ZIP_TO_DIST}")
+message("\tAIO Zip to dist: ${AIO_ZIP_TO_DIST}")
+
+# #######################################################################################################################
+# # Add CMake features
+# #######################################################################################################################
+include(XSEPlugin)
+
+# #######################################################################################################################
+# # Find dependencies
+# #######################################################################################################################
+find_package(magic_enum CONFIG REQUIRED)
+find_package(xbyak CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_path(CLIB_UTIL_INCLUDE_DIRS "ClibUtil/utils.hpp")
+
+target_include_directories(
+	${PROJECT_NAME}
+	PRIVATE
+	${CLIB_UTIL_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+	${PROJECT_NAME}
+	PRIVATE
+	magic_enum::magic_enum
+	xbyak::xbyak
+	nlohmann_json::nlohmann_json
+)
+
+# https://gitlab.kitware.com/cmake/cmake/-/issues/24922#note_1371990
+if(MSVC_VERSION GREATER_EQUAL 1936 AND MSVC_IDE) # 17.6+
+	# When using /std:c++latest, "Build ISO C++23 Standard Library Modules" defaults to "Yes".
+	# Default to "No" instead.
+	#
+	# As of CMake 3.26.4, there isn't a way to control this property
+	# (https://gitlab.kitware.com/cmake/cmake/-/issues/24922),
+	# We'll use the MSBuild project system instead
+	# (https://learn.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure)
+	file(CONFIGURE OUTPUT "${CMAKE_BINARY_DIR}/Directory.Build.props" CONTENT [==[
+<Project>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <BuildStlModules>false</BuildStlModules>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>
+]==] @ONLY)
+endif()
+
+# #######################################################################################################################
+# # Automatic deployment
+# #######################################################################################################################
+if(AUTO_PLUGIN_DEPLOYMENT)
+	foreach(DEPLOY_TARGET $ENV{OutputDir})
+		message("Copying AIO to ${DEPLOY_TARGET}")
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}${PROJECT_NAME}SKSE/Plugins/"
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}${PROJECT_NAME}SKSE/Plugins/"
+		)
+	endforeach()
+
+	if(NOT DEFINED ENV{OutputDir})
+		message("When using AUTO_PLUGIN_DEPLOYMENT option, you need to set environment variable 'OutputDir'")
+	endif()
+endif()
