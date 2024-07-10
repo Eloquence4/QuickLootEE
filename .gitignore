@@ -3,3 +3,4 @@ cmake-build*/
 build/
 swf/artifacts/
 .vs/
+vcpkg*
