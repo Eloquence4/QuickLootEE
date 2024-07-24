@@ -5,7 +5,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": {
           "type": "STRING",
-          "value": "Release"
+          "value": "RelWithDebInfo"
         }
       },
       "errors": {
@@ -62,7 +62,7 @@
       ],
       "hidden": true,
       "name": "vs2022-windows",
-      "toolset": "v143"
+      "toolset": "v142"
     },
     {
       "binaryDir": "${sourceDir}/build/skyrim",

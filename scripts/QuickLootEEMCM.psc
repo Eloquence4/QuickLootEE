@@ -9,7 +9,7 @@ GlobalVariable property QLEECloseInCombat auto
 GlobalVariable property QLEECloseWhenEmpty auto
 GlobalVariable property QLEEDispelInvisibility auto
 GlobalVariable property QLEEOpenWhenContainerUnlocked auto
-; GlobalVariable property QLEEDisableForAnimals auto
+GlobalVariable property QLEEDisableForAnimals auto
 
 ; Icon Settings
 GlobalVariable property QLEEIconShowBookRead auto
@@ -42,7 +42,7 @@ event OnPageReset(string page)
     AddToggleOptionST("close_when_empty", "Close when container is empty", QLEECloseWhenEmpty.GetValue(), 0)
     AddToggleOptionST("dispel_invis", "Break invisibility when used", QLEEDispelInvisibility.GetValue(), 0)
     AddToggleOptionST("open_when_container_unlocked", "Open when container is unlocked", QLEEOpenWhenContainerUnlocked.GetValue(), 0)
-    ; AddToggleOptionST("disable_for_animals", "Disable QuickLoot for animals", QLEEDisableForAnimals.GetValue(), 0)
+    AddToggleOptionST("disable_for_animals", "Disable QuickLoot for animals", QLEEDisableForAnimals.GetValue(), 0)
 
     AddHeaderOption("Window Settings (leave at 0 for default)", 0)
     AddSliderOptionST("window_X", "Window X", QLEEWindowX.GetValue(), "{0}", 0)
@@ -103,15 +103,15 @@ state open_when_container_unlocked
     EndEvent
 endState
 
-; state disable_for_animals
-;     event OnHighlightST()
-;     endEvent
+state disable_for_animals
+    event OnHighlightST()
+    endEvent
 
-;     Event OnSelectST()
-;         QLEEDisableForAnimals.SetValue(1 - QLEEDisableForAnimals.GetValue())
-;         self.SetToggleOptionValueST(QLEEDisableForAnimals.GetValue(), false, "")
-;     EndEvent
-; endState
+    Event OnSelectST()
+        QLEEDisableForAnimals.SetValue(1 - QLEEDisableForAnimals.GetValue())
+        self.SetToggleOptionValueST(QLEEDisableForAnimals.GetValue(), false, "")
+    EndEvent
+endState
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Window Settings States ;;

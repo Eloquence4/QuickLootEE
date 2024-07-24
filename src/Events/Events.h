@@ -104,20 +104,25 @@ namespace Events
 				return CanOpen(_cachedAshPile.get());
 			}
 
-			//const bool disable_for_animals = Settings::DisableForAnimals();
+			const bool disable_for_animals = Settings::DisableForAnimals();
+			const bool disable_for_monsters = Settings::DisableForMonsters();
 
 			if (auto actor = a_ref->As<RE::Actor>(); actor) {
-				//auto dobj = RE::BGSDefaultObjectManager::GetSingleton();
-				//auto animal_keyword = dobj->GetObject<RE::BGSKeyword>(RE::DEFAULT_OBJECT::kKeywordAnimal);
-
-				if (!actor->IsDead() 
-					|| actor->IsSummoned())
-					//|| (disable_for_animals && actor->GetRace()->HasKeyword(animal_keyword)))
-				{
+				// show menu?
+				bool no_menu = !actor->IsDead() || actor->IsSummoned();
+				//isAnimal
+				no_menu = no_menu || disable_for_animals && actor->HasKeywordString("ActorTypeAnimal");
+				//isMonster
+				if (!no_menu && disable_for_monsters) {
+					bool is_monster = actor->HasKeywordString("ActorTypeDragon");
+					no_menu = is_monster;
+				}
+				//isCustomKeyword?
+				// todo: file io
+				if (no_menu) {
 					return false;
 				}
 			}
-
 			return a_ref->HasContainer();
 		}
 
